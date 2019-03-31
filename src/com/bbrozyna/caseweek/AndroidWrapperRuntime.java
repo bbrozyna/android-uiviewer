@@ -45,16 +45,17 @@ class AndroidWrapperRuntime {
         return executeCommandInADB("version").readLine();
     }
 
-    String getUI() throws IOException {
+    void replaceDumpFile() throws IOException {
         executeCommandInADB("shell uiautomator dump /sdcard/dump.xml");
-        executeCommandInADB("cat /sdcard/dump.xml");
-        return "";
+        executeCommandInADB("pull /sdcard/dump.xml");
     }
 
     public static void main(String[] args){
         AndroidWrapperRuntime awr = new AndroidWrapperRuntime();
         try {
-            System.out.println(awr.getVersion());
+
+            awr.replaceDumpFile();
+            System.out.println(awr.getDevices().get(0));
         } catch (IOException e) {
             e.printStackTrace();
         }
