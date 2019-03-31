@@ -14,19 +14,6 @@ public class UINode {
         return attributes;
     }
 
-    public void setAttributes(HashMap<String, String> attributes) {
-        this.attributes = attributes;
-    }
-
-
-    public int[] getBorderCorners(){
-        return null;
-    }
-
-    public boolean hasProperties(HashMap<String, String> propertiesMap){
-        return false;
-    }
-
     @Override
     public String toString() {
         if (attributes.isEmpty())

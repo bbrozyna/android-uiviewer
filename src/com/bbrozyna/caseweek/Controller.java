@@ -31,7 +31,7 @@ public class Controller implements Initializable {
         System.out.println(newValue);
         attributeValues.getItems().clear();
         attributeKeys.getItems().clear();
-        attributeKeys.getItems().addAll(ui.getAttributeByName().get(newValue).keySet());
+        attributeKeys.getItems().addAll(ui.getAttributeByName().get(newValue).keySet()); // todo encapsulation
         attributeValues.getItems().addAll(ui.getAttributeByName().get(newValue).values());
     }
 }

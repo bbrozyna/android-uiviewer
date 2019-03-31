@@ -1,18 +1,18 @@
 package com.bbrozyna.caseweek.models;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UIHierarchy {
     private Document document;
@@ -26,60 +26,64 @@ public class UIHierarchy {
     private DocumentBuilder dBuilder;
 
 
-    UIHierarchy(){
-        uiElements = new ArrayList<UINode>();
-        attributeByName = new HashMap<>();
-        try {
-            dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    UIHierarchy() {
+        initializeVariables();
+
     }
 
     public UIHierarchy(String filePath) {
-        attributeByName = new HashMap<>();
-        uiElements = new ArrayList<UINode>();
+        initializeVariables();
         try {
-            dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             parseDump(filePath);
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     UIHierarchy(InputStream inputStream) {
+        initializeVariables();
+        try {
+            parseDump(inputStream);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void initializeVariables() {
+        uiElements = new ArrayList<>();
         attributeByName = new HashMap<>();
-        uiElements = new ArrayList<UINode>();
         try {
             dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            parseDump(inputStream);
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     public HashMap<String, HashMap<String, String>> getAttributeByName() {
+        if (attributeByName.isEmpty()) {
+            getAllElementsNames();
+        }
         return attributeByName;
     }
 
 
-    public void parseDump(String filepath) throws IOException, SAXException {
+    private void parseDump(String filepath) throws IOException, SAXException {
         this.document = dBuilder.parse(new File(filepath));
         parseNodes(document.getChildNodes());
     }
 
-    public void parseDump(InputStream inputStream) throws IOException, SAXException {
+    private void parseDump(InputStream inputStream) throws IOException, SAXException {
         this.document = dBuilder.parse(inputStream);
         parseNodes(document.getChildNodes());
     }
 
-    public ArrayList<String> getAllElementsNames(){
+    public ArrayList<String> getAllElementsNames() {
         ArrayList<String> representation = new ArrayList<>();
         uiElements.forEach(e -> {
             String name = e.toString();
             representation.add(name);
             attributeByName.put(name, e.getAttributes());
-                });
+        });
         return representation;
     }
 
@@ -105,7 +109,7 @@ public class UIHierarchy {
                     for (int i = 0; i < nodeMap.getLength(); i++) {
 
                         Node node = nodeMap.item(i);
-                        tempUINode.getAttributes().put(node.getNodeName(), node.getNodeValue());
+                        tempUINode.getAttributes().put(node.getNodeName(), node.getNodeValue());  // todo encapsulation
                         System.out.println("attr name : " + node.getNodeName());  // debug
                         System.out.println("attr value : " + node.getNodeValue());
 
@@ -127,10 +131,10 @@ public class UIHierarchy {
 
     public static void main(String[] args) {
         UIHierarchy ui = new UIHierarchy("dump.xml");  // test file
-        for (String name : ui.getAllElementsNames()){
+        for (String name : ui.getAllElementsNames()) {
             System.out.println(name);
-            }
         }
     }
+}
 
 
