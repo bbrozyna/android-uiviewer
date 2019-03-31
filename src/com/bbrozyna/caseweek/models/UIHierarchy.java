@@ -22,11 +22,13 @@ public class UIHierarchy {
     }
 
     private ArrayList<UINode> uiElements;
+    private HashMap<String, HashMap<String, String>> attributeByName;
     private DocumentBuilder dBuilder;
 
 
     UIHierarchy(){
         uiElements = new ArrayList<UINode>();
+        attributeByName = new HashMap<>();
         try {
             dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         }catch (Exception e) {
@@ -34,7 +36,8 @@ public class UIHierarchy {
         }
     }
 
-    UIHierarchy(String filePath) {
+    public UIHierarchy(String filePath) {
+        attributeByName = new HashMap<>();
         uiElements = new ArrayList<UINode>();
         try {
             dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -45,6 +48,7 @@ public class UIHierarchy {
     }
 
     UIHierarchy(InputStream inputStream) {
+        attributeByName = new HashMap<>();
         uiElements = new ArrayList<UINode>();
         try {
             dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -52,6 +56,10 @@ public class UIHierarchy {
         }catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public HashMap<String, HashMap<String, String>> getAttributeByName() {
+        return attributeByName;
     }
 
 
@@ -63,6 +71,16 @@ public class UIHierarchy {
     public void parseDump(InputStream inputStream) throws IOException, SAXException {
         this.document = dBuilder.parse(inputStream);
         parseNodes(document.getChildNodes());
+    }
+
+    public ArrayList<String> getAllElementsNames(){
+        ArrayList<String> representation = new ArrayList<>();
+        uiElements.forEach(e -> {
+            String name = e.toString();
+            representation.add(name);
+            attributeByName.put(name, e.getAttributes());
+                });
+        return representation;
     }
 
 
@@ -109,12 +127,10 @@ public class UIHierarchy {
 
     public static void main(String[] args) {
         UIHierarchy ui = new UIHierarchy("dump.xml");  // test file
-        for (UINode uiNode : ui.getUiElements()){
-            for (String key : uiNode.getAttributes().keySet()){
-                System.out.println(key + " " + uiNode.getAttributes().get(key));
+        for (String name : ui.getAllElementsNames()){
+            System.out.println(name);
             }
         }
     }
 
-}
 

@@ -18,18 +18,18 @@
          <children>
             <VBox prefHeight="194.0" prefWidth="156.0">
                <children>
-                  <ListView VBox.vgrow="ALWAYS" />
+                  <ListView fx:id="attributeNames" VBox.vgrow="ALWAYS" />
                </children></VBox>
             <SplitPane dividerPositions="0.37755102040816324" prefHeight="182.0" prefWidth="165.0" VBox.vgrow="ALWAYS">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
-                        <ListView prefHeight="182.0" prefWidth="200.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="attributeKeys" prefHeight="182.0" prefWidth="200.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="79.0">
                      <children>
-                        <ListView prefHeight="182.0" prefWidth="124.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="attributeValues" prefHeight="182.0" prefWidth="124.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
               </items>
