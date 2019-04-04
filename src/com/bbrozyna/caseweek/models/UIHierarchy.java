@@ -12,7 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 public class UIHierarchy {
     private Document document;
@@ -65,6 +67,21 @@ public class UIHierarchy {
         }
         return attributeByName;
     }
+
+    public Set<String> getAttributeProperties(String name){
+        HashMap<String, String> attribute = this.attributeByName.get(name);
+        if (attribute !=null)
+            return attribute.keySet();
+        return null;
+    }
+
+    public Collection<String> getAttributeValues(String name) {
+        HashMap<String, String> attribute = this.attributeByName.get(name);
+        if (attribute !=null)
+            return attribute.values();
+        return null;
+    }
+
 
 
     private void parseDump(String filepath) throws IOException, SAXException {

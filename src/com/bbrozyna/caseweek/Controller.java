@@ -2,7 +2,6 @@ package com.bbrozyna.caseweek;
 
 import com.bbrozyna.caseweek.models.UIHierarchy;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,8 +14,8 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     public ListView attributeNames;
-    public ListView attributeKeys;
-    public ListView attributeValues;
+    public ListView<String> attributeKeys;
+    public ListView<String> attributeValues;
     public ImageView screenshot;
 
 
@@ -34,15 +33,14 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
 
-
-
     }
 
     private void fillAttributes(UIHierarchy ui, Object newValue) {
         System.out.println(newValue);
+        String selectedPosition = String.valueOf(newValue);
         attributeValues.getItems().clear();
         attributeKeys.getItems().clear();
-        attributeKeys.getItems().addAll(ui.getAttributeByName().get(newValue).keySet()); // todo encapsulation
-        attributeValues.getItems().addAll(ui.getAttributeByName().get(newValue).values());
+        attributeKeys.getItems().addAll(ui.getAttributeProperties(selectedPosition));
+        attributeValues.getItems().addAll(ui.getAttributeValues(selectedPosition));
     }
 }

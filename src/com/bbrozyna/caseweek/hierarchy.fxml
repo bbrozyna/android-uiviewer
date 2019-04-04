@@ -61,9 +61,9 @@
    <center>
       <Pane BorderPane.alignment="CENTER">
          <children>
-            <ImageView fx:id="screenshot" fitHeight="613.0" fitWidth="469.0" layoutX="49.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="screenshot" fitHeight="795.0" fitWidth="480.0" layoutX="28.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image preserveRatio="true" requestedHeight="800" requestedWidth="500" smooth="true" url="https://d2rormqr1qwzpz.cloudfront.net/photos/2016/07/01/89331-2016-07-01-04.png" />
+                  <Image url="@../../../../screen.png" />
                </image>
             </ImageView>
          </children>

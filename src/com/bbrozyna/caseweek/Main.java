@@ -15,7 +15,9 @@ public class Main extends Application {
 
         primaryStage.setTitle("Android UI viewer");
 
-        Scene scene = new Scene(root, 800, 800);
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(830);
+        Scene scene = new Scene(root, 800, 830);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
