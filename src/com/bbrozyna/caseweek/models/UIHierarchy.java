@@ -28,7 +28,7 @@ public class UIHierarchy {
     private DocumentBuilder dBuilder;
 
 
-    UIHierarchy() {
+    public UIHierarchy() {
         initializeVariables();
 
     }

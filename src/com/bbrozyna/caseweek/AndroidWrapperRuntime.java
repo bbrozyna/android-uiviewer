@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class AndroidWrapperRuntime {
     //  todo JUnit tests?
@@ -21,6 +23,32 @@ class AndroidWrapperRuntime {
 
         Process pr = runtime.exec(fullCommand);
         return new BufferedReader(new InputStreamReader(pr.getInputStream()));
+    }
+
+    ArrayList<Integer> getScreenSize(){
+        String resolution;
+        ArrayList<Integer> dimensions = new ArrayList<>();
+        try {
+           BufferedReader responseFromADB = executeCommandInADB("shell dumpsys window | grep mBounds");
+           if ((resolution=responseFromADB.readLine()) != null){
+               Pattern p = Pattern.compile("\\[.*\\]\\s*\\[(.*)\\]");
+               Matcher m = p.matcher(resolution);
+               if(m.find()){
+                   String[] result = m.group(1).split(",");
+                   for(String dimension : result){
+                       dimensions.add(Integer.valueOf(dimension
+                       ));
+                   }
+                   return dimensions;
+               }
+
+
+           }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     ArrayList<String> getDevices(){
@@ -50,7 +78,7 @@ class AndroidWrapperRuntime {
         executeCommandInADB("pull /sdcard/dump.xml");
     }
 
-    public void touch(int x, int y) throws IOException {
+    void touch(long x, long y) throws IOException {
         String command  = String.format("%s %d %d","shell input tap", x, y);
         executeCommandInADB(command);
     }
@@ -60,7 +88,9 @@ class AndroidWrapperRuntime {
         try {
             awr.replaceDumpFile();
             System.out.println(awr.getDevices().get(0));
-            awr.touch(1100, 2300);
+            for (int i : awr.getScreenSize()){
+                System.out.println(i);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
