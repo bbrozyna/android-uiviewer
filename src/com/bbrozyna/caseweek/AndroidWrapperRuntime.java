@@ -2,6 +2,7 @@ package com.bbrozyna.caseweek;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class AndroidWrapperRuntime {
-    //  todo JUnit tests?
     private Runtime runtime;
     private String ADB_PATH = Paths.get(System.getProperty("user.dir"), "adb", "adb.exe").toString();
 
@@ -18,11 +18,26 @@ class AndroidWrapperRuntime {
         this.runtime = Runtime.getRuntime();
     }
 
+    private Process executeCommand(String command) throws IOException {
+        return runtime.exec(command);
+    }
+
     private BufferedReader executeCommandInADB(String command) throws IOException {
         String fullCommand = ADB_PATH + " " + command;
 
-        Process pr = runtime.exec(fullCommand);
-        return new BufferedReader(new InputStreamReader(pr.getInputStream()));
+        Process pr = executeCommand(fullCommand);
+        InputStream inputStream = pr.getInputStream();
+        return new BufferedReader(new InputStreamReader(inputStream));
+    }
+
+    private void executeCommandInADBAndWait(String command) throws IOException {
+        String fullCommand = ADB_PATH + " " + command;
+        Process pr = executeCommand(fullCommand);
+        try {
+            pr.waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     ArrayList<Integer> getScreenSize(){
@@ -73,27 +88,31 @@ class AndroidWrapperRuntime {
         return executeCommandInADB("version").readLine();
     }
 
-    public void replaceDumpFile() throws IOException {
+    void replaceDumpFile() throws IOException {
         executeCommandInADB("shell uiautomator dump /sdcard/dump.xml");
         executeCommandInADB("pull /sdcard/dump.xml");
     }
 
+    void replaceScreenshot() throws IOException{
+        executeCommandInADBAndWait("shell screencap /sdcard/screen.png");
+        executeCommandInADBAndWait("pull /sdcard/screen.png");
+    }
+
+
     void touch(long x, long y) throws IOException {
         String command  = String.format("%s %d %d","shell input tap", x, y);
-        executeCommandInADB(command);
+        System.out.println(command);
+        executeCommandInADBAndWait(command);
     }
 
     public static void main(String[] args){
         AndroidWrapperRuntime awr = new AndroidWrapperRuntime();
         try {
-            awr.replaceDumpFile();
-            System.out.println(awr.getDevices().get(0));
-            for (int i : awr.getScreenSize()){
-                System.out.println(i);
-            }
+            awr.replaceScreenshot();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("dupa");
     }
 
     }

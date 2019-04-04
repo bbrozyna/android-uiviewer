@@ -61,10 +61,7 @@
    <center>
       <Pane BorderPane.alignment="CENTER">
          <children>
-            <ImageView fx:id="screenshot" fitHeight="795.0" fitWidth="480.0" layoutX="28.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../screen.png" />
-               </image>
+            <ImageView fx:id="screenshot" fitHeight="800.0" fitWidth="480.0" layoutX="28.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
             </ImageView>
          </children>
       </Pane>
