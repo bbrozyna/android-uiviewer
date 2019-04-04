@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bbrozyna.caseweek.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="858.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bbrozyna.caseweek.Controller">
    <right>
-      <VBox prefHeight="375.0" prefWidth="266.0">
+      <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="975.0" prefWidth="323.0" BorderPane.alignment="TOP_RIGHT">
          <children>
-            <VBox prefHeight="194.0" prefWidth="156.0">
+            <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="451.0" prefWidth="266.0" VBox.vgrow="SOMETIMES">
                <children>
                   <ListView fx:id="attributeNames" VBox.vgrow="ALWAYS" />
                </children></VBox>
@@ -29,7 +29,7 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="79.0">
                      <children>
-                        <ListView fx:id="attributeValues" prefHeight="182.0" prefWidth="124.0" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="attributeValues" prefHeight="186.0" prefWidth="165.0" AnchorPane.bottomAnchor="-6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-4.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
               </items>
@@ -38,7 +38,7 @@
       </VBox>
    </right>
    <top>
-      <MenuBar BorderPane.alignment="CENTER">
+      <MenuBar prefHeight="2.0" prefWidth="621.0" BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -59,11 +59,11 @@
       </MenuBar>
    </top>
    <center>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <Pane BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="375.0" fitWidth="336.0" layoutX="49.0" pickOnBounds="true" preserveRatio="true" fx:id="screenshot">
+            <ImageView fx:id="screenshot" fitHeight="613.0" fitWidth="469.0" layoutX="49.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../screen.png" />
+                  <Image preserveRatio="true" requestedHeight="800" requestedWidth="500" smooth="true" url="https://d2rormqr1qwzpz.cloudfront.net/photos/2016/07/01/89331-2016-07-01-04.png" />
                </image>
             </ImageView>
          </children>

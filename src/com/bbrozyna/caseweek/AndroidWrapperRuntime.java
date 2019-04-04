@@ -53,7 +53,6 @@ class AndroidWrapperRuntime {
     public static void main(String[] args){
         AndroidWrapperRuntime awr = new AndroidWrapperRuntime();
         try {
-
             awr.replaceDumpFile();
             System.out.println(awr.getDevices().get(0));
         } catch (IOException e) {
