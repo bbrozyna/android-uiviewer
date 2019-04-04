@@ -134,8 +134,6 @@ public class UIHierarchy {
 
                         Node node = nodeMap.item(i);
                         tempUINode.getAttributes().put(node.getNodeName(), node.getNodeValue());
-                        System.out.println("attr name : " + node.getNodeName());  // debug
-                        System.out.println("attr value : " + node.getNodeValue());
 
                     }
                     uiElements.add(tempUINode);
@@ -155,9 +153,6 @@ public class UIHierarchy {
 
     public static void main(String[] args) {
         UIHierarchy ui = new UIHierarchy("dump.xml");  // test file
-        for (String name : ui.getAllElementsNames()) {
-            System.out.println(name);
-        }
     }
 }
 

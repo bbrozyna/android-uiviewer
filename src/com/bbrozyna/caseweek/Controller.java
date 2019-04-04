@@ -1,11 +1,17 @@
 package com.bbrozyna.caseweek;
 
 import com.bbrozyna.caseweek.models.UIHierarchy;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 import java.io.*;
 import java.net.URL;
@@ -37,18 +43,27 @@ public class Controller implements Initializable {
 
         updateImage();
 
-
         screenshot.setOnMouseClicked(event -> {
-            clickAndUpdateScreenshot(event);
+            click(event);
         });
-
+        
+        startAutoUpdateImage();
+        
+    }
+   
+    private void startAutoUpdateImage() {
+    	Timeline fiveSecondsWonder = new Timeline();
+        fiveSecondsWonder.getKeyFrames().add(new KeyFrame(Duration.seconds(0.5), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	updateImage();
+            }
+        }));
+        fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
+        fiveSecondsWonder.play();
     }
 
-    private void print(Object t){
-        System.out.println(String.valueOf(t));
-    }
-
-    private void clickAndUpdateScreenshot(MouseEvent event) {
+    private void click(MouseEvent event) {
         double x = (event.getX());
         double y = (event.getY());
         ArrayList<Integer> phoneSize = awr.getScreenSize();
@@ -61,11 +76,9 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        updateImage();
     }
 
     private void fillAttributes(UIHierarchy ui, Object newValue) {
-        System.out.println(newValue);
         String selectedPosition = String.valueOf(newValue);
         attributeValues.getItems().clear();
         attributeKeys.getItems().clear();
@@ -78,7 +91,7 @@ public class Controller implements Initializable {
 
         try {
             awr.replaceScreenshot();
-            inputStream = new FileInputStream("screen.png");
+            inputStream = new FileInputStream("screen.jpg");
             image = new Image(inputStream, IMAGE_WIDTH, IMAGE_HEIGHT, true, true);
             screenshot.setImage(image);
         } catch (IOException  e) {
