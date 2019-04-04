@@ -45,9 +45,14 @@ class AndroidWrapperRuntime {
         return executeCommandInADB("version").readLine();
     }
 
-    void replaceDumpFile() throws IOException {
+    public void replaceDumpFile() throws IOException {
         executeCommandInADB("shell uiautomator dump /sdcard/dump.xml");
         executeCommandInADB("pull /sdcard/dump.xml");
+    }
+
+    public void touch(int x, int y) throws IOException {
+        String command  = String.format("%s %d %d","shell input tap", x, y);
+        executeCommandInADB(command);
     }
 
     public static void main(String[] args){
@@ -55,13 +60,10 @@ class AndroidWrapperRuntime {
         try {
             awr.replaceDumpFile();
             System.out.println(awr.getDevices().get(0));
+            awr.touch(1100, 2300);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //TODO decide where to trycatch
-
-    //TODO get the proper values and types
-
-}
+    }
