@@ -34,18 +34,27 @@ public class UIHierarchy {
     }
 
     public UIHierarchy(String filePath) {
+        updateHierarchy(filePath);
+    }
+
+    UIHierarchy(InputStream inputStream) {
+        updateHierarchy(inputStream);
+
+    }
+
+    public void updateHierarchy(InputStream inputStream){
         initializeVariables();
         try {
-            parseDump(filePath);
+            parseDump(inputStream);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    UIHierarchy(InputStream inputStream) {
+    public void updateHierarchy(String filePath){
         initializeVariables();
         try {
-            parseDump(inputStream);
+            parseDump(filePath);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -68,20 +77,19 @@ public class UIHierarchy {
         return attributeByName;
     }
 
-    public Set<String> getAttributeProperties(String name){
+    public Set<String> getAttributeProperties(String name) {
         HashMap<String, String> attribute = this.attributeByName.get(name);
-        if (attribute !=null)
+        if (attribute != null)
             return attribute.keySet();
         return null;
     }
 
     public Collection<String> getAttributeValues(String name) {
         HashMap<String, String> attribute = this.attributeByName.get(name);
-        if (attribute !=null)
+        if (attribute != null)
             return attribute.values();
         return null;
     }
-
 
 
     private void parseDump(String filepath) throws IOException, SAXException {
@@ -104,7 +112,6 @@ public class UIHierarchy {
         return representation;
     }
 
-
     private void parseNodes(NodeList nodeList) {
 
         if (!document.hasChildNodes()) {
@@ -126,7 +133,7 @@ public class UIHierarchy {
                     for (int i = 0; i < nodeMap.getLength(); i++) {
 
                         Node node = nodeMap.item(i);
-                        tempUINode.getAttributes().put(node.getNodeName(), node.getNodeValue());  // todo encapsulation
+                        tempUINode.getAttributes().put(node.getNodeName(), node.getNodeValue());
                         System.out.println("attr name : " + node.getNodeName());  // debug
                         System.out.println("attr value : " + node.getNodeValue());
 

@@ -21,17 +21,10 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        UIHierarchy ui = new UIHierarchy("dump.xml");  // test file
+        UIHierarchy ui = new UIHierarchy("dump.xml");
         attributeNames.getItems().addAll(ui.getAllElementsNames());
         attributeNames.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> fillAttributes(ui, newValue));
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream("screen.png");
-            Image image = new Image(inputStream, 800, 600, true, true);
-            screenshot.setImage(image);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        updateImage();
 
     }
 
@@ -42,5 +35,16 @@ public class Controller implements Initializable {
         attributeKeys.getItems().clear();
         attributeKeys.getItems().addAll(ui.getAttributeProperties(selectedPosition));
         attributeValues.getItems().addAll(ui.getAttributeValues(selectedPosition));
+    }
+
+    private void updateImage(){
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream("screen.png");
+            Image image = new Image(inputStream, 800, 600, true, true);
+            screenshot.setImage(image);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
