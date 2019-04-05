@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    public final static String DUMP_PATH = "dump.xml";
+    final static String DUMP_PATH = "dump.xml";
 
-    public final static int IMAGE_WIDTH = 480;
-    public final static int IMAGE_HEIGHT = 800;
+    final static int IMAGE_WIDTH = 480;
+    final static int IMAGE_HEIGHT = 800;
 
     private AndroidWrapperRuntime awr;
     private UIHierarchy ui;
@@ -36,16 +36,12 @@ public class Controller implements Initializable {
         attributeNames.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> fillAttributes(ui, newValue));
 
         updateImage();
-
-
-        screenshot.setOnMouseClicked(event -> {
-            clickAndUpdateScreenshot(event);
-        });
+        screenshot.setOnMouseClicked(this::clickAndUpdateScreenshot);
 
     }
 
     private void print(Object t){
-        System.out.println(String.valueOf(t));
+        System.out.println((t));
     }
 
     private void clickAndUpdateScreenshot(MouseEvent event) {
@@ -58,10 +54,15 @@ public class Controller implements Initializable {
 
         try {
             awr.touch(touchPositionX, touchPositionY);
+            awr.replaceDumpFile();
+            ui.updateHierarchy(DUMP_PATH);
+            attributeNames.getItems().clear();
+            attributeNames.getItems().addAll(ui.getAllElementsNames());
         } catch (IOException e) {
             e.printStackTrace();
         }
         updateImage();
+
     }
 
     private void fillAttributes(UIHierarchy ui, Object newValue) {

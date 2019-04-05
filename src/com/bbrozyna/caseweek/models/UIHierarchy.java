@@ -154,9 +154,12 @@ public class UIHierarchy {
 
 
     public static void main(String[] args) {
-        UIHierarchy ui = new UIHierarchy("dump.xml");  // test file
-        for (String name : ui.getAllElementsNames()) {
-            System.out.println(name);
+        //  todo 1. In dump.xml file, find the Object with text Messages and return it bounds ([0,514][720,640]). Extra: return
+        UIHierarchy ui = new UIHierarchy("dump.xml");
+        for (UINode node : ui.getUiElements()) {
+            HashMap<String, String> nodeAttributes = node.getAttributes();
+            for(String attributeName : nodeAttributes.keySet())
+            System.out.println(attributeName + ": " + nodeAttributes.get(attributeName));  // attributeValue
         }
     }
 }

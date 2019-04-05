@@ -89,8 +89,8 @@ class AndroidWrapperRuntime {
     }
 
     void replaceDumpFile() throws IOException {
-        executeCommandInADB("shell uiautomator dump /sdcard/dump.xml");
-        executeCommandInADB("pull /sdcard/dump.xml");
+        executeCommandInADBAndWait("shell uiautomator dump /sdcard/dump.xml");
+        executeCommandInADBAndWait("pull /sdcard/dump.xml");
     }
 
     void replaceScreenshot() throws IOException{
@@ -105,14 +105,29 @@ class AndroidWrapperRuntime {
         executeCommandInADBAndWait(command);
     }
 
+    public String getOperatorName(){
+        // todo 2. Using getprop, find the property and parse the values
+        return "";
+    }
+
+    public void swipe(){
+        // todo 3. Use swipe to go from home to app tray
+    }
+
+    public boolean installAPK(){
+        // todo 4. Install apk using a method
+        return false;
+    }
+
     public static void main(String[] args){
         AndroidWrapperRuntime awr = new AndroidWrapperRuntime();
         try {
-            awr.replaceScreenshot();
+            awr. getVersion();
+            System.out.println(awr.getOperatorName());  // todo use getprop and parse the response
+            awr.swipe();  // todo what arguments it needs?
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("dupa");
     }
 
     }
