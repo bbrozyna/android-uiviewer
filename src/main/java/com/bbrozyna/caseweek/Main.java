@@ -11,7 +11,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("hierarchy.fxml"));
+        Parent root = FXMLLoader.load(Main.class.getResource("hierarchy.fxml"));
 
         primaryStage.setTitle("Android UI viewer");
 
