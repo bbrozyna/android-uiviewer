@@ -1,50 +1,67 @@
 package com.bbrozyna.caseweek;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class AndroidWrapperRuntime {
-    private Runtime runtime;
-    private String ADB_PATH = Paths.get(System.getProperty("user.dir"), "adb", "adb.exe").toString();
+import javax.imageio.ImageIO;
 
+import com.bbrozyna.caseweek.client.ApkClient;
 
-    AndroidWrapperRuntime(){
-        this.runtime = Runtime.getRuntime();
+public class AndroidWrapperRuntime {
+    private Thread instrumentationThread;
+
+    AndroidWrapperRuntime() throws IOException {
+    	if (getDevices().isEmpty()) {
+    		throw new IOException("No Devices");
+    	}
+		ApkClient.installAPKs();
+		forwardADBPort();
+        startInstrumentationServer();
     }
-
-    private Process executeCommand(String command) throws IOException {
-        return runtime.exec(command);
+    
+    private void forwardADBPort() {
+    	try {
+			ADBExecutor.executeCommandInADBAndWait("forward tcp:65432 tcp:65432");
+			System.out.println("Forwarded");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
-
-    private BufferedReader executeCommandInADB(String command) throws IOException {
-        String fullCommand = ADB_PATH + " " + command;
-
-        Process pr = executeCommand(fullCommand);
-        InputStream inputStream = pr.getInputStream();
-        return new BufferedReader(new InputStreamReader(inputStream));
+    
+    private void startInstrumentationServer() throws IOException {
+    	String command = "shell am instrument -w -r   -e debug false -e class 'com.screenaccessibilityreader.ApplicationTest#testAutomation' com.screenaccessibilityreader.test/android.support.test.runner.AndroidJUnitRunner";
+    	instrumentationThread = new Thread(new Runnable() {
+			public void run() {
+				try {
+					System.out.println("Starting instrumentation");
+					ADBExecutor.executeCommandInADBAndWait(command);
+				} catch (IOException e) {
+					return;
+				}
+			}
+		});
+    	instrumentationThread.start();
     }
-
-    private void executeCommandInADBAndWait(String command) throws IOException {
-        String fullCommand = ADB_PATH + " " + command;
-        Process pr = executeCommand(fullCommand);
-        try {
-            pr.waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     ArrayList<Integer> getScreenSize(){
         String resolution;
         ArrayList<Integer> dimensions = new ArrayList<>();
         try {
-           BufferedReader responseFromADB = executeCommandInADB("shell dumpsys window | grep mBounds");
+           BufferedReader responseFromADB = ADBExecutor.executeCommandInADB("shell dumpsys window | grep mBounds");
            if ((resolution=responseFromADB.readLine()) != null){
                Pattern p = Pattern.compile("\\[.*\\]\\s*\\[(.*)\\]");
                Matcher m = p.matcher(resolution);
@@ -71,7 +88,7 @@ class AndroidWrapperRuntime {
         String deviceInfo;
 
         try {
-            BufferedReader responseFromADB = executeCommandInADB("devices");
+            BufferedReader responseFromADB = ADBExecutor.executeCommandInADB("devices");
 
             while((deviceInfo=responseFromADB.readLine()) != null) {
                 if(!(deviceInfo.contains("List") || deviceInfo.isEmpty()))
@@ -85,24 +102,27 @@ class AndroidWrapperRuntime {
     }
 
     String getVersion() throws IOException{
-        return executeCommandInADB("version").readLine();
+        return ADBExecutor.executeCommandInADB("version").readLine();
     }
 
     void replaceDumpFile() throws IOException {
-        executeCommandInADBAndWait("shell uiautomator dump /sdcard/dump.xml");
-        executeCommandInADBAndWait("pull /sdcard/dump.xml");
+
+		byte[] data = ApkClient.readData("dump");
+		try (PrintWriter out = new PrintWriter("dump.xml")) {
+		    out.println(new String(data));
+		}
     }
 
     void replaceScreenshot() throws IOException{
-        executeCommandInADBAndWait("shell screencap /sdcard/screen.png");
-        executeCommandInADBAndWait("pull /sdcard/screen.png");
+		byte[] data = ApkClient.readData("screenshot");
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(data));
+        ImageIO.write(img, "jpg", new File("screen.jpg"));
     }
-
 
     void touch(long x, long y) throws IOException {
         String command  = String.format("%s %d %d","shell input tap", x, y);
         System.out.println(command);
-        executeCommandInADBAndWait(command);
+        ADBExecutor.executeCommandInADBAndWait(command);
     }
 
     public String getOperatorName(){
@@ -120,9 +140,9 @@ class AndroidWrapperRuntime {
     }
 
     public static void main(String[] args){
-        AndroidWrapperRuntime awr = new AndroidWrapperRuntime();
         try {
-            awr. getVersion();
+        	AndroidWrapperRuntime awr = new AndroidWrapperRuntime();
+            awr.getVersion();
             System.out.println(awr.getOperatorName());  // todo use getprop and parse the response
             awr.swipe();  // todo what arguments it needs?
         } catch (IOException e) {
@@ -130,4 +150,4 @@ class AndroidWrapperRuntime {
         }
     }
 
-    }
+   }
