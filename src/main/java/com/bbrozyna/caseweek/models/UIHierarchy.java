@@ -134,8 +134,6 @@ public class UIHierarchy {
 
                         Node node = nodeMap.item(i);
                         tempUINode.getAttributes().put(node.getNodeName(), node.getNodeValue());
-                        System.out.println("attr name : " + node.getNodeName());  // debug
-                        System.out.println("attr value : " + node.getNodeValue());
 
                     }
                     uiElements.add(tempUINode);
@@ -153,8 +151,7 @@ public class UIHierarchy {
     }
 
 
-    public static void main(String[] args) {
-        //  todo 1. In dump.xml file, find the Object with text Messages and return it bounds ([0,514][720,640]). Extra: return
+    public static void main(String[] args) {        
         UIHierarchy ui = new UIHierarchy("dump.xml");
         for (UINode node : ui.getUiElements()) {
             HashMap<String, String> nodeAttributes = node.getAttributes();

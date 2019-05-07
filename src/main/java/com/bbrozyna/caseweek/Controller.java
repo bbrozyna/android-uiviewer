@@ -1,11 +1,17 @@
 package com.bbrozyna.caseweek;
 
 import com.bbrozyna.caseweek.models.UIHierarchy;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 import java.io.*;
 import java.net.URL;
@@ -18,7 +24,7 @@ public class Controller implements Initializable {
     final static int IMAGE_WIDTH = 480;
     final static int IMAGE_HEIGHT = 800;
 
-    private AndroidWrapperRuntime awr;
+    private AndroidWrapperRuntime awr = null;
     private UIHierarchy ui;
 
     public ListView attributeNames;
@@ -30,21 +36,32 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        awr = new AndroidWrapperRuntime();
+    	try {
+    		awr = new AndroidWrapperRuntime();
+    	} catch (IOException e){
+    		e.printStackTrace();
+    	}
         ui = new UIHierarchy(DUMP_PATH);
         attributeNames.getItems().addAll(ui.getAllElementsNames());
         attributeNames.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> fillAttributes(ui, newValue));
 
-        updateImage();
-        screenshot.setOnMouseClicked(this::clickAndUpdateScreenshot);
-
+        screenshot.setOnMouseClicked(this::click);
+        startAutoUpdateImage();
+    }
+   
+    private void startAutoUpdateImage() {
+    	Timeline fiveSecondsWonder = new Timeline();
+        fiveSecondsWonder.getKeyFrames().add(new KeyFrame(Duration.seconds(2), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	updateImage();
+            }
+        }));
+        fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
+        fiveSecondsWonder.play();
     }
 
-    private void print(Object t){
-        System.out.println((t));
-    }
-
-    private void clickAndUpdateScreenshot(MouseEvent event) {
+    private void click(MouseEvent event) {
         double x = (event.getX());
         double y = (event.getY());
         ArrayList<Integer> phoneSize = awr.getScreenSize();
@@ -52,21 +69,20 @@ public class Controller implements Initializable {
         long touchPositionX = Math.round((x/image.getWidth()) * phoneSize.get(0));
         long touchPositionY = Math.round((y/image.getHeight()) * phoneSize.get(1));
 
-        try {
-            awr.touch(touchPositionX, touchPositionY);
-            awr.replaceDumpFile();
-            ui.updateHierarchy(DUMP_PATH);
-            attributeNames.getItems().clear();
-            attributeNames.getItems().addAll(ui.getAllElementsNames());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (awr != null) {
+            try {
+                awr.touch(touchPositionX, touchPositionY);
+                awr.replaceDumpFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        updateImage();
-
+        ui.updateHierarchy(DUMP_PATH);
+        attributeNames.getItems().clear();
+        attributeNames.getItems().addAll(ui.getAllElementsNames());
     }
 
     private void fillAttributes(UIHierarchy ui, Object newValue) {
-        System.out.println(newValue);
         String selectedPosition = String.valueOf(newValue);
         attributeValues.getItems().clear();
         attributeKeys.getItems().clear();
@@ -77,9 +93,15 @@ public class Controller implements Initializable {
     private void updateImage(){
         InputStream inputStream = null;
 
+        if (awr != null) {
+	        try {
+	            awr.replaceScreenshot();
+	        } catch (IOException  e) {
+	            e.printStackTrace();
+	        }
+        }
         try {
-            awr.replaceScreenshot();
-            inputStream = new FileInputStream("screen.png");
+        	inputStream = new FileInputStream("screen.jpg");
             image = new Image(inputStream, IMAGE_WIDTH, IMAGE_HEIGHT, true, true);
             screenshot.setImage(image);
         } catch (IOException  e) {
